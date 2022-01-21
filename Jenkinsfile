@@ -1,14 +1,12 @@
 pipeline {
   agent any
-  tools {
-    maven 'maven' 
-  }
   stages {
     stage ('Build') {
       steps {
-        dir ("/var/lib/jenkins/workspace/AndrewBanin/spring-petclinic/")
-        sh './mvnw package'
+        dir ("/var/lib/jenkins/workspace/spring-petclinic/")
+        sh 'maven package'
       }
     }
   }
 }
+
