@@ -9,10 +9,12 @@ pipeline{
                 sh "mvn clean package"
             }
         }
-        stage('Zip and Publish artifacts') {
+        stage ('push artifact') {
             steps {
-                 archiveArtifacts artifacts: 'target/*.jar', followSymlinks: false
+                zip zipFile: 'spring-petclinic.zip', archive: false, dir: 'target/'
+                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
             }
         }
     }
 }
+
