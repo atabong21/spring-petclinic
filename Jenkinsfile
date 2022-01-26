@@ -11,8 +11,7 @@ pipeline{
         }
         stage('Zip and Publish artifacts') {
             steps {
-                 zip zipFile: 'spring-petclinic.zip' , archive: false, dir: 'target/*.jar'
-                 archiveArtifacts artifacts: 'spring-petclinic.zip' , fingerprint: true
+                 archiveArtifacts artifacts: 'target/*.jar', followSymlinks: false
             }
         }
     }
