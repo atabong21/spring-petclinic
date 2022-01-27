@@ -11,8 +11,9 @@ pipeline{
         }
         stage ('Zip artifact') {
             steps {
+                sh 'rm -rf petclinic'
                 sh 'mkdir petclinic'
-                sh 'cp -r target/*.jar spring-petclinic'
+                sh 'cp -r target/*.jar petclinic'
                 script{
                   zip zipFile: 'petclinic.zip', archive: false, dir: 'petclinic'  
                 }
