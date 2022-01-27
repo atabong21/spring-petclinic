@@ -9,10 +9,18 @@ pipeline{
                 sh "mvn clean package"
             }
         }
-        stage ('push artifact') {
+        stage ('Zip artifact') {
             steps {
-                zip zipFile: 'spring-petclinic.zip', followSymlinks: false, dir: 'target/*.jar'
-                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+                sh 'mkdir petclinic'
+                sh 'cp -r target/*.jar spring-petclinic'
+                script{
+                  zip zipFile: 'petclinic.zip', archive: false, dir: 'petclinic'  
+                }
+            }
+        }
+        stage('Publish Artifact'){
+            steps{
+                archiveArtifacts artifacts: 'petclinic.zip', fingerprint: true
             }
         }
     }
