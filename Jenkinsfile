@@ -5,6 +5,9 @@ pipeline{
     }
     environment {
 		DOCKERHUB_CREDENTIALS=credentials('dockerhubtoken')
+        AWS_ACCESS_KEY_ID   = credentials('aws-id-credential')
+        AWS_SECRET_ACCESS_KEY = credentials('aws secrete-credentials')
+        AWS_DEFAULT_REGION = ('us-east-1')
 	}
     stages{
 
@@ -36,6 +39,11 @@ pipeline{
 				sh 'docker push  charityngenge/spring-petclinic:${BUILD_NUMBER}-dev'
 			}
 		}
+        stage('Cloudformation') {
+            steps {
+                sh "aws cloudformation create-stack --stack-name petclinic-${BUILD_NUMBER} --template-body file://Infrastructure/infrastructure.yaml  --region 'us-east-1' --parameters ParameterKey=KeyName,ParameterValue=petclinic"
+            }
+        }
         stage('CleanWorkSpace'){
             steps {
                 cleanWs()
