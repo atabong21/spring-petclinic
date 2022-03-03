@@ -4,44 +4,45 @@ pipeline{
       maven 'Maven'
     }
     environment {
-		DOCKERHUB_CREDENTIALS=credentials('dockerhubtoken')
-        AWS_ACCESS_KEY_ID   = credentials('	aws_id_key')
-        AWS_SECRET_ACCESS_KEY = credentials('aws_secret_key')
-        AWS_DEFAULT_REGION = ('us-east-1')
+		DOCKERHUB_CREDENTIALS=credentials('docker_token_id')
+        DOCKERUSER="charityngenge"
+	    AWS_ACCESS_KEY_ID=credentials('aws-access-id')
+        AWS_SECRET_ACCESS_KEY=credentials('aws-secret-id')
+        AWS_DEFAULT_REGION=('us-east-1')	
 	}
     stages{
-
         stage('Maven Build'){
             steps{
                 sh "mvn clean package"
-            }
-            
+            } 
         }
-
-		stage('Build') {
+		stage('Docker Build Petclinic') {
 
 			steps {
-				sh 'docker build -t charityngenge/spring-petclinic:${BUILD_NUMBER}-dev .'
+				sh 'docker build -t $DOCKERUSER/spring-petclinic:${BUILD_NUMBER}-dev .'
 			}
 		}
-
-		stage('Login') {
+		stage('Login to Docker HUB') {
 
 			steps {
-
-				sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR -p $DOCKERHUB_CREDENTIALS_PSW'
+				sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
 			}
 		}
 
 		stage('Push') {
 
 			steps {
-				sh 'docker push  charityngenge/spring-petclinic:${BUILD_NUMBER}-dev'
+				sh 'docker push  $DOCKERUSER/spring-petclinic:${BUILD_NUMBER}-dev'
 			}
 		}
-        stage('Cloudformation') {
-            steps {
-                sh "aws cloudformation create-stack --stack-name petclinic-${BUILD_NUMBER} --template-body file://Infrastructure/infrastructure.yaml  --region 'us-east-1' --parameters ParameterKey=KeyName,ParameterValue=petclinic"
+		stage('cloudformation') {
+			steps{
+				sh"aws cloudformation create-stack --stack-name spring-petclinic-${BUILD_NUMBER} --template-body file://add-infrastructure1.yml --region 'us-east-1' --parameters ParameterKey=KeyName,ParameterValue=cloudformation"
+			}
+		}
+        stage('Cleanup') {
+            steps{
+                sh "docker rmi $DOCKERUSER/spring-petclinic:${BUILD_NUMBER}-dev"
             }
         }
         stage('CleanWorkSpace'){
@@ -49,12 +50,10 @@ pipeline{
                 cleanWs()
             }
         }
-        
 	}
-
 	post {
 		always {
 			sh 'docker logout'
 		}
 	}
-}    
+}
