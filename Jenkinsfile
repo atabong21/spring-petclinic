@@ -34,7 +34,7 @@ pipeline{
 		}
 		stage('cloudformation') {
 			steps{
-				sh"aws cloudformation create-stack --stack-name spring-petclinic-${BUILD_NUMBER} --template-body file://add-infrastructure.yml --region 'us-east-1' --parameters ParameterKey=KeyName,ParameterValue=cloudformation"
+				sh"aws cloudformation create-stack --stack-name spring-petclinic-${BUILD_NUMBER} --template-body file://add-infrastructure.yaml --region 'us-east-1' --parameters ParameterKey=KeyName,ParameterValue=cloudformation"
 			}
 		}
         stage('Cleanup') {
