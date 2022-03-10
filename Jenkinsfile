@@ -37,6 +37,16 @@ pipeline{
 				sh"aws cloudformation create-stack --stack-name spring-petclinic-${BUILD_NUMBER} --template-body file://infrastructure.yaml --region 'us-east-1' --parameters ParameterKey=KeyName,ParameterValue=cloudformation ParameterKey=ServerName,ParameterValue=spring-petclinic-${BUILD_NUMBER}"
 			}
 		}
+		stage('WaitingForInstanceToComeUp') {
+			steps{
+				sh ' sleep 2m'
+			}
+		}
+		stage('GetInstanceIP') {
+			steps{
+                sh  'aws ec2 describe-instances --filters Name=tag:Name,Values="spring-petclinic-${BUILD_NUMBER}" --query 'Reservations[].Instances[].PublicIpAddress' --output text'
+			}
+		}
         stage('Cleanup') {
             steps{
                 sh "docker rmi $DOCKERUSER/spring-petclinic:${BUILD_NUMBER}-dev"
