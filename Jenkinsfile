@@ -44,7 +44,8 @@ pipeline{
 		}
 		stage('GetInstanceIP') {
 			steps{
-                sh  "aws ec2 describe-instances --filters Name=tag:Name,Values='spring-petclinic-${BUILD_NUMBER}' --query 'Reservations[].Instances[].PublicIpAddress' --output text"
+                springIP = $(sh  "aws ec2 describe-instances --filters Name=tag:Name,Values='spring-petclinic-${BUILD_NUMBER}' --query 'Reservations[].Instances[].PublicIpAddress' --output text")
+                sh "echo ${springIP}"
 			}
 		}
         stage('Cleanup') {
