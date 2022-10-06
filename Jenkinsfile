@@ -13,7 +13,7 @@ pipeline{
     stages{
         stage('Maven Build'){
             steps{
-                sh "mvn clean package"
+                sh "mvn package"
             } 
         }
 		stage('Docker Build Petclinic') {
