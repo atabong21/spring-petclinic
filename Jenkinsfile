@@ -5,7 +5,7 @@ pipeline{
     }
     environment {
 		DOCKERHUB_CREDENTIALS=credentials('atabong')
-        DOCKERUSER="charityngenge"
+        DOCKERUSER="leke2921@gmail.com"
 	    // AWS_ACCESS_KEY_ID=credentials('aws-access-id')
         // AWS_SECRET_ACCESS_KEY=credentials('aws-secret-id')
         // AWS_DEFAULT_REGION=('us-east-1')	
