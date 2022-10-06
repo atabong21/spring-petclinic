@@ -4,7 +4,7 @@ pipeline{
       maven 'maven'
     }
     environment {
-		DOCKERHUB_CREDENTIALS=credentials('docker-jenkins')
+		DOCKERHUB_CREDENTIALS=credentials('atabong')
         DOCKERUSER="charityngenge"
 	    // AWS_ACCESS_KEY_ID=credentials('aws-access-id')
         // AWS_SECRET_ACCESS_KEY=credentials('aws-secret-id')
