@@ -19,7 +19,7 @@ pipeline{
 		stage('Docker Build Petclinic') {
 
 			steps {
-				sh 'docker build -t $DOCKERUSER/petclinic:${BUILD_NUMBER}-dev .'
+				sh 'docker build -t $DOCKERUSER/petclinic:${BUILD_NUMBER} .'
 			}
 		}
 		stage('Login to Docker HUB') {
@@ -32,7 +32,7 @@ pipeline{
 		stage('Push Docker Image to Container Registry') {
 
 			steps {
-				sh 'docker push  $DOCKERUSER/petclinic:${BUILD_NUMBER}-dev'
+				sh 'docker push  $DOCKERUSER/petclinic:${BUILD_NUMBER}'
 			}
 		}
 		// stage('cloudformation') {
@@ -55,7 +55,7 @@ pipeline{
 	post {
 		always {
 			sh 'docker logout'
-			sh 'docker rmi $DOCKERUSER/petclinic:${BUILD_NUMBER}-dev'
+			sh 'docker rmi $DOCKERUSER/petclinic:${BUILD_NUMBER}'
 			cleanWs()
 		}
 	}	
