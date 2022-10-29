@@ -4,8 +4,8 @@ pipeline{
       maven 'maven'
     }
     environment {
-		DOCKERHUB_CREDENTIALS=credentials('atabong')
-        DOCKERUSER="leke2921@gmail.com"
+		DOCKERHUB_CREDENTIALS=credentials('docker-connection')
+        DOCKERUSER="atabong"
 	    // AWS_ACCESS_KEY_ID=credentials('aws-access-id')
         // AWS_SECRET_ACCESS_KEY=credentials('aws-secret-id')
         // AWS_DEFAULT_REGION=('us-east-1')	
@@ -13,13 +13,13 @@ pipeline{
     stages{
         stage('Maven Build'){
             steps{
-                sh "mvn package"
+                sh "mvn clean package"
             } 
         }
 		stage('Docker Build Petclinic') {
 
 			steps {
-				sh 'docker build -t $DOCKERUSER/petclinic:${BUILD_NUMBER} .'
+				sh 'docker build -t $DOCKERUSER/petclinic:${BUILD_NUMBER}-dev .'
 			}
 		}
 		stage('Login to Docker HUB') {
@@ -32,7 +32,7 @@ pipeline{
 		stage('Push Docker Image to Container Registry') {
 
 			steps {
-				sh 'docker push  $DOCKERUSER/petclinic:${BUILD_NUMBER}'
+				sh 'docker push  $DOCKERUSER/petclinic:${BUILD_NUMBER}-dev'
 			}
 		}
 		// stage('cloudformation') {
@@ -55,7 +55,7 @@ pipeline{
 	post {
 		always {
 			sh 'docker logout'
-			sh 'docker rmi $DOCKERUSER/petclinic:${BUILD_NUMBER}'
+			sh 'docker rmi $DOCKERUSER/petclinic:${BUILD_NUMBER}-dev'
 			cleanWs()
 		}
 	}	
